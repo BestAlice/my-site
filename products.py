@@ -2,13 +2,13 @@ from flask import *
 from flask_restful import Resource
 
 class Products(Resource):
-    def get(self, news_id):
+    def get(self, product_id):
         #abort_if_news_not_found(news_id)
-        self.products = NewsModel(db.get_connection()).get(news_id)
+        self.products = ModelProducts(db.get_connection()).get(news_id)
         return jsonify({'news': news})
  
     def delete(self, news_id):
-        abort_if_news_not_found(news_id)
+        #abort_if_product_not_found(product_id)
         ModelProducts(db.get_connection()).delete(news_id)
         return jsonify({'success': 'OK'}) 
 
@@ -22,9 +22,8 @@ class ModelProducts(db.Model): # крректировать
     year = db.Column(db.Integer, unique=False, nullable=False)
  
     def __repr__(self):
-        return '<YandexLyceumStudent {} {} {} {}>'.format(
-            self.id, self.username, self.name, self.surname)
+        return #строка
 
-    def abort_if_news_not_found(news_id):
-       if not NewsModel(db.get_connection()).get(news_id):
+    def abort_if_product_not_found(self, news_id):
+       if not ModelProducts(db.get_connection()).get(news_id):
          abort(404, message="News {} not found".format(news_id))
