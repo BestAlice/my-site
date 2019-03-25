@@ -1,37 +1,59 @@
 from flask import *
-from flask_restful import reqparse, abort, Api, Resource
-from flask_sqlalchemy import SQLAlchemy
-#from main_list import Main_list
-#from werkzeug.security import generate_password_hash
+from loginform import LoginForm
+from signupform import SignUpForm
+from db_connect import *
 
-# ПОМОГИТЕЕЕЕЕЕЕЕЕЕЕ.
+db = DB()
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_RECORD_QUERIES'] = True
-db = SQLAlchemy(app)
-db.create_all()
-api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-#hash = generate_password_hash('yandexlyceum')
 
-parser_login = reqparse.RequestParser()
-parser_login.add_argument('name', required=True)
-parser_login.add_argument('login', required=True)
-parser_login.add_argument('password', required=True)
-parser_login.add_argument('user_id', required=True, type=int)
 
-@api.resource('/')
-class Main_list(Resource):
-    def get(self):
-        json_products = None # база данных
-        title = 'Товары'
-        return render_template('main_list.html', title= title, products= json_products)
-                            #form=form, username=session['username'])
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found 404'}), 404)
 
-#def abort_if_news_not_found(news_id):
- ##   if not NewsModel(db.get_connection()).get(news_id):
- #      abort(404, message="News {} not found".format(news_id))
+
+@app.route('/')
+@app.route('/main')
+def index():
+    #news =  NewsModel(db.get_connection()).get_all(session['user_id'])
+    #name = session['username'] if 'username' not in session else 'Пользователь'
+    return render_template('main_list.html', title='Главная страница', username='Пользователь')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignUpForm()
+    if form.validate_on_submit():
+        user_name = form.username.data
+        password = form.password.data
+        user_model = UserModel(db.get_connection())
+        user_model.init_table()
+        exists = user_model.exists(user_name, password)
+        if (not exists[0]):
+            user_model.insert(user_name, password)
+        return redirect("/main")
+    return render_template('signup.html', title='Регистрация', form=form)    
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user_name = form.username.data
+        password = form.password.data
+        user_model = UserModel(db.get_connection())
+        user_model.init_table()
+        exists = user_model.exists(user_name, password)
+        if (exists[0]):
+            session['username'] = user_name
+            session['user_id'] = exists[1]
+        return redirect("/main")
+    return render_template('login.html', title='Авторизация', form=form)
+
+@app.route('/logout')
+def logout():
+    session.pop('username',0)
+    session.pop('user_id',0)
+    return redirect('/login')
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
