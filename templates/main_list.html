@@ -6,11 +6,26 @@
     <h2 align=right>
       {% if "username" in session %}
         <a class="navbar-brand" href="/logout">{{session['username']}}</a>
+        <br>
+        <a href="/add_product">Добавить Товар</a>
+        <br>
+        <a class="navbar-brand" href="/logout">Выход</a>
       {% else %} 
-        <a class="navbar-brand" href="/login">Регистрация</a>  
-        <a class="navbar-brand" href="/singup">Вход</a> 
+        <p>{{username}}</p>
+        <a class="navbar-brand" href="/signup">Регистрация</a>  
+        <a class="navbar-brand" href="/login">Вход</a> 
      {% endif %}
      </h2>
-     <p></p><p></p>
+     
+     <br><br>
      <h4> Вот список доступных товаров: </h4>
+     {% for item in products %}
+	    <div class="alert alert-dark" role="alert">
+	        <h2>{{item[1]}}</h2>
+          <div>{{item[2]}}</div>
+          {% if status==item[4] %}
+          <a href="/delete_product/{{item[0]}}">Удалить товар</a>
+          {% endif %}
+	    </div>
+	{% endfor %}
 {% endblock %}
