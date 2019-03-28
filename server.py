@@ -60,7 +60,6 @@ def login():
         user_model = UserModel(db.get_connection())
         user_model.init_table()
         exists = user_model.exists(user_name, password)
-        print(UserModel(db.get_connection()).get(exists[1]))
         if (exists[0]):
             session['username'] = user_name
             session['user_id'] = exists[1]
@@ -128,18 +127,31 @@ def delete_product1(product_id):
 @app.route('/basket')
 def basket1():
     basket = BasketModel(db.get_connection()).get_all(session['user_id'])
-    print(basket)
     prod = ProductModel(db.get_connection())
-    sp = [prod.get(i) for i in basket[0]]
-    print(sp[0])
+    if len(basket) > 0:
+        sp = [prod.get(i[0]) for i in basket]
+    else:
+        sp = 'Пусто'
+    print(sp)
     return render_template('basket.html', title= 'Корзина', products= sp)
 
 @app.route('/add_in_basket/<int:product_id>', methods=['GET', 'POST'])
 def add_in(product_id):
     basket = BasketModel(db.get_connection())
     basket.insert(product_id, session['user_id'])
+    return redirect('/main')
+
+@app.route('/buy_one_product/<int:product_id>', methods=['GET'])
+def buy_one(product_id):
+    basket = BasketModel(db.get_connection())
+    basket.delete_one(product_id, session['user_id'])
     return redirect('/basket')
 
+@app.route('/buy_all', methods=['GET'])
+def buy_all():
+    basket = BasketModel(db.get_connection())
+    basket.delete_for_buyer(session['user_id'])
+    return redirect('/basket')
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
