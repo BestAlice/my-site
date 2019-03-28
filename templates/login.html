@@ -1,28 +1,46 @@
 {% extends "base.html" %}
- 
+
 {% block content %}
-    <h1>Авторизация</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username }}<br>
-            {% for error in form.username.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password }}<br>
-            {% for error in form.password.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
-    </form>
+<head>
+<style type="text/css">
+   .block1{
+    position: absolute;
+    height: 500px; /* Высота блока */
+    width: 500px;
+    padding-left: 15px;
+    top: 327px;
+    left: 666px;
+    background: repeat-y #9aceeb;  /* &nbsp;&nbsp; пробелы*/
+   }
+  </style>
+</head>>
+<body background="Вход.jpg" bgproperties="fixed">
+    <div class="block1" id="container" align="center">
+        <h1>Авторизация</h1>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username.label }}<br>
+                {{ form.username }}<br>
+                {% for error in form.username.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password }}<br>
+                {% for error in form.password.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </p>
+            <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+            <p>{{ form.submit() }}</p>
+        </form>
+        <i> Входим в систему </i>
+    <div>
+</body>
 {% endblock %}

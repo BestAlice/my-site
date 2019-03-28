@@ -1,7 +1,10 @@
 from flask import *
 from loginform import LoginForm
 from signupform import SignUpForm
-from db_connect import DB, UserModel, ProductModel
+from db_connect import DB
+from User import UserModel
+from basket import BasketModel
+from products import ProductModel
 from add_product import AddProductForm
 
 db = DB()
@@ -24,10 +27,11 @@ def main():
         name = session['username']
         products =  ProductModel(db.get_connection()).get_all()
         status = session['user_id']
+        BasketModel(db.get_connection()).init_table()
     else:
         name = 'Пользователь'
         products =  ProductModel(db.get_connection()).get_all()
-        status = 'no user'
+        status = 'no_user'
     return render_template('main_list.html', title='Главная страница', \
         username='Пользователь', \
         products= products,
@@ -42,7 +46,6 @@ def signup():
         user_model = UserModel(db.get_connection())
         user_model.init_table()
         exists = user_model.exists(user_name, password)
-        
         if (not exists[0]):
             user_model.insert(user_name, password, 'user')
         return redirect("/main")
@@ -70,6 +73,13 @@ def logout():
     session.pop('user_id',0)
     return redirect('/main')
 
+#--------------------------------------  
+
+@app.route('/products',  methods=['GET'])
+def get_products():
+    products = ProductModel(db.get_connection()).get_all()
+    return jsonify({'product': products})
+
 @app.route('/add_product', methods=['GET', 'POST'])
 def add_product():
     if 'username' not in session:
@@ -84,11 +94,6 @@ def add_product():
         return redirect("/main")
     return render_template('add_product.html', title='Добавление Товара',
                            form=form, username=session['username'])
-
-@app.route('/products',  methods=['GET'])
-def get_products():
-    products = ProductModel(db.get_connection()).get_all()
-    return jsonify({'product': products})
 
 @app.route('/product/<int:product_id>',  methods=['GET'])
 def get_one_product(product_id):
@@ -108,13 +113,33 @@ def create_product():
                 request.json['price'], request.json['user_id'])
     return jsonify({'success': 'OK'})
 
-@app.route('/product/<int:product_id>', methods=['DELETE'])
-def delete_product(product_id):
-    product = ProductModel(db.get_connection())
-    if not product.get(product_id):
-        return jsonify({'error': 'Not found'})
-    product.delete(product_id)
-    return jsonify({'success': 'OK'})
+@app.route('/delete_product/<int:product_id>', methods=['GET'])
+def delete_product1(product_id):
+    if 'username' not in session:
+        return redirect('/login')
+    nm = ProductModel(db.get_connection())
+    nm.delete(product_id)
+    bas = BasketModel(db.get_connection())
+    bas.delete_with_product(product_id)
+    return redirect("/")
+
+#---------------------------------------------------
+
+@app.route('/basket')
+def basket1():
+    basket = BasketModel(db.get_connection()).get_all(session['user_id'])
+    print(basket)
+    prod = ProductModel(db.get_connection())
+    sp = [prod.get(i) for i in basket[0]]
+    print(sp[0])
+    return render_template('basket.html', title= 'Корзина', products= sp)
+
+@app.route('/add_in_basket/<int:product_id>', methods=['GET', 'POST'])
+def add_in(product_id):
+    basket = BasketModel(db.get_connection())
+    basket.insert(product_id, session['user_id'])
+    return redirect('/basket')
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')

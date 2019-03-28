@@ -1,7 +1,9 @@
-﻿
-{% extends "base.html" %}
- 
+﻿{% extends "base.html" %}
+ <head>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+ </head>>
 {% block content %}
+<body background="img.jpg" bgproperties="fixed">
     <h1 align=center>Добро пожаловать!</h1>
     <h2 align=right>
       {% if "username" in session %}
@@ -23,9 +25,14 @@
 	    <div class="alert alert-dark" role="alert">
 	        <h2>{{item[1]}}</h2>
           <div>{{item[2]}}</div>
+          <div>Цена: {{item[3]}}</div>
           {% if status==item[4] %}
-          <a href="/delete_product/{{item[0]}}">Удалить товар</a>
+            <a href="/delete_product/{{item[0]}}">Удалить товар</a>
+          {% endif %}
+          {% if  status != 'no_user'%}
+          <a href="/add_in_basket/{{item[0]}}">В корзину</a>
           {% endif %}
 	    </div>
 	{% endfor %}
+</body>
 {% endblock %}

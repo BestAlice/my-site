@@ -1,27 +1,44 @@
 {% extends "base.html" %}
+<head>
+<style type="text/css">
+   .block1{
+    position: absolute;
+    height: 500px; /* Высота блока */
+    width: 500px;
+    padding-left: 15px;
+    top: 330px;
+    left: 666px;
+    background: repeat-y #f0ffff;  /* &nbsp;&nbsp; пробелы*/
+   }
+  </style>
+</head>>
  
 {% block content %}
-    <h1>Регистрация</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username }}<br>
-            {% for error in form.username.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password }}<br>
-            {% for error in form.password.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+<body background="Регистр.jpg" bgproperties="fixed">
+    <div class="block1" id="container" align="center">
+        <h1>Регистрация</h1>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username.label }}<br>
+                {{ form.username }}<br>
+                {% for error in form.username.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password }}<br>
+                {% for error in form.password.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+        </form>
+    </div>
+</body>
 {% endblock %}
