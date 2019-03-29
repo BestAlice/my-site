@@ -1,36 +1,54 @@
 ﻿{% extends "base.html" %}
+<head>
+    <style type="text/css">
+    body { background: url("img.jpg"); }
+   .block1{
+    position: absolute;
+    height: 700px; /* Высота блока */
+    width: 700px;
+    padding-left: 15px;
+    top: 200px;
+    left: 600px;
+    background: repeat-y #cd853f;  /* &nbsp;&nbsp; пробелы*/
+   }
+  </style>
+</head>
  
 {% block content %}
-    <h1>Добавление Продукт</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.title.label }}<br>
-            {{ form.title }}<br>
-            {% for error in form.title.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.content.label }}<br>
-            {{ form.content }}<br>
-            {% for error in form.content.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.price.label }}<br>
-            {{ form.price }}<br>
-            {% for error in form.content.errors %}
-                <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <body bgproperties="fixed">
+        <div class="block1" id="container" align="center">
+            <h1>Добавление Продуктa</h1>
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.title.label }}<br>
+                    {{ form.title }}<br>
+                    {% for error in form.title.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.content.label }}<br>
+                    {{ form.content }}<br>
+                    {% for error in form.content.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.price.label }}<br>
+                    {{ form.price }}<br>
+                    {% for error in form.content.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </p>
+                <p>{{ form.submit() }}</p>
+            </form>
+        </div>
+    </body>
 {% endblock %}
