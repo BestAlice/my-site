@@ -1,18 +1,52 @@
 {% extends "base.html" %}
+<HEAD>
+	<style type="text/css">
+    body { background: url("img.jpg"); }
+   .block1{
+    position: absolute;
+    height: 500px; /* Высота блока */
+    width: 1600px;
+    padding-left: 15px;
+    top: 180px;
+    left:20px;
+    background: repeat-y #e8ab56;  /* &nbsp;&nbsp; пробелы*/
+   }
+   .block2{
+   	position: absolute;
+    height: 500px; /* Высота блока */
+    width: 230px;
+    padding-left: 15px;
+    top: 180px;
+    left:1650px;
+    background: repeat-y #ffffff;  /* &nbsp;&nbsp; пробелы*/
+   }
+  </style>
+</HEAD>
 
 <!-- products - список кортежей товаров в корзине -->
 {% block content %}
-<a class="navbar-brand" href="/main">Главная страница</a>
-{% if products != 'Пусто'  %}
-  {% for item in products %}
-    <div class="alert alert-dark" role="alert">
-    <h2>{{item[1]}}</h2>
-    <a href="/buy_one_product/{{item[0]}}" align=right>Купить</a>
-    <div>{{item[3]}}</div>
-    </div>
-  {% endfor %}
-  <h2><a href='/buy_all'>Купить всё</a></h2>
-{% else %}
-  <h3 align=center>Корзина пуста</h3>
-{% endif %}
+<body bgproperties="fixed">
+	<a class="navbar-brand" href="/main">Главная страница</a>
+	{% if products != 'Пусто'  %}
+	 <div class="block1" id="container">
+	 	<ul>
+	  	{% for item in products %}
+	    	<li>
+	    	<div class="alert alert-dark" role="alert">
+	    	<h2>{{item[1]}}</h2>
+	    	<a href="/buy_one_product/{{item[0]}}" align=right>Купить</a>
+	    	<div>{{item[3]}}</div>
+	    	</div>
+	    	</li>
+		</ul>
+	 </div>
+	  {% endfor %}
+	  <h2><a href='/buy_all'>Купить всё</a></h2>
+	{% else %}
+	  <h3 align=center>Корзина пуста</h3>
+	{% endif %}
+	<div class="block2" id="container">
+	Сдесь могла быть ваша реклама!!!
+	</div>
+</body>
 {% endblock %}

@@ -1,15 +1,18 @@
 ﻿{% extends "base.html" %}
- <!-- <head>
- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
- </head>> -->
+  <head>
+ <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+ <style type="text/css">
+   body {background-color:lightgray; }
+ </style>
+ </head>
  <!-- products - список кортежей всех товаров 
       status - id пользователя, если авторизован, иначе no_user -->
 {% block content %}
-<body background="img.jpg" bgproperties="fixed">
+<body bgproperties="fixed">
     <h1 align=center>Добро пожаловать!</h1>
     <h2 align=right>
       {% if "username" in session %}
-        <a class="navbar-brand" href="/logout">{{session['username']}}</a> <br>
+        <a class="navbar-brand" href="/my_page">{{session['username']}}</a> <br>
         <a href="/add_product">Добавить Товар</a> <br>
         <a href="/basket">Корзина</a> <br>
         <a class="navbar-brand" href="/logout">Выход</a>
@@ -17,7 +20,7 @@
         <p>{{username}}</p>
         <a class="navbar-brand" href="/signup">Регистрация</a>  
         <a class="navbar-brand" href="/login">Вход</a> 
-     {% endif %}
+      {% endif %}
      </h2>
      
      <br><br>
@@ -30,8 +33,9 @@
           {% if status==item[4] %}
             <a href="/delete_product/{{item[0]}}">Удалить товар</a>
           {% endif %}
-          {% if  status != 'no_user'%}
-          <a href="/add_in_basket/{{item[0]}}">В корзину</a>
+          {% if (status != 'no_user') and (item[4] != status) %}
+          <a href="/add_in_basket/{{item[0]}}">В корзину   </a>
+          <a href="/buy_one_product/{{item[0]}}">   Купить</a>
           {% endif %}
 	    </div>
 	{% endfor %}

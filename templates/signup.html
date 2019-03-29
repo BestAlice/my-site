@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 <head>
 <style type="text/css">
+    body { background: url("img.jpg"); }
    .block1{
     position: absolute;
     height: 500px; /* Высота блока */
@@ -8,13 +9,13 @@
     padding-left: 15px;
     top: 330px;
     left: 666px;
-    background: repeat-y #f0ffff;  /* &nbsp;&nbsp; пробелы*/
+    background: repeat-y #fff8e7;  /* &nbsp;&nbsp; пробелы*/
    }
   </style>
 </head>>
  
 {% block content %}
-<body background="Регистр.jpg" bgproperties="fixed">
+<body bgproperties="fixed">
     <div class="block1" id="container" align="center">
         <h1>Регистрация</h1>
         <form action="" method="post" novalidate>

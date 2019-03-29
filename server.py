@@ -21,8 +21,8 @@ def not_found(error):
 @app.route('/')
 @app.route('/main')
 def main():    
-    nm = ProductModel(db.get_connection())
-    nm.init_table()
+    UserModel(db.get_connection()).init_table()
+    ProductModel(db.get_connection()).init_table()
     if 'username' in session:
         name = session['username']
         products =  ProductModel(db.get_connection()).get_all()
@@ -44,10 +44,9 @@ def signup():
         user_name = form.username.data
         password = form.password.data
         user_model = UserModel(db.get_connection())
-        user_model.init_table()
         exists = user_model.exists(user_name, password)
         if (not exists[0]):
-            user_model.insert(user_name, password, 'user')
+            user_model.insert(user_name, password, 'user', 0, 0)
         return redirect("/main")
     return render_template('signup.html', title='Регистрация', form=form)    
 
@@ -132,7 +131,6 @@ def basket1():
         sp = [prod.get(i[0]) for i in basket]
     else:
         sp = 'Пусто'
-    print(sp)
     return render_template('basket.html', title= 'Корзина', products= sp)
 
 @app.route('/add_in_basket/<int:product_id>', methods=['GET', 'POST'])
@@ -141,17 +139,35 @@ def add_in(product_id):
     basket.insert(product_id, session['user_id'])
     return redirect('/main')
 
-@app.route('/buy_one_product/<int:product_id>', methods=['GET'])
+@app.route('/buy_one_product/<int:product_id>', methods=['GET', 'UPDATE'])
 def buy_one(product_id):
     basket = BasketModel(db.get_connection())
     basket.delete_one(product_id, session['user_id'])
+    UserModel(db.get_connection()).new_buy(session['user_id'])
+    seller = ProductModel(db.get_connection()).get(product_id)[4]
+    UserModel(db.get_connection()).new_sale(seller)
     return redirect('/basket')
 
 @app.route('/buy_all', methods=['GET'])
 def buy_all():
     basket = BasketModel(db.get_connection())
+    sp = basket.get_all(session['user_id'])
+    prod = ProductModel(db.get_connection())
+    print(len(sp), session['user_id'])
+    UserModel(db.get_connection()).new_buy(session['user_id'], len(sp))
+    for item in sp:
+        seller = prod.get(item[0])[4]
+        UserModel(db.get_connection()).new_sale(seller)
     basket.delete_for_buyer(session['user_id'])
     return redirect('/basket')
+
+#-------------------------------------------
+
+@app.route('/my_page', methods=['GET'])
+def profile():
+    user = UserModel(db.get_connection()).get(session['user_id'])
+    my_products = ProductModel(db.get_connection()).get_all(session['user_id'])
+    return render_template('my_page.html', user=user, products=my_products)
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 align=center>{{user[1]}}</h1>
+    <!-- Сделай по возможности Куплено и Продано на одной строке
+        в случае неудачи верни Продано к левому краю -->
+    <p align=left>Куплено: {{user[4]}}</p>  
+    <p align=right>Продано: {{user[5]}}</p>
+    <br>
+    <h4>Мои товары:</h4>
+    {% for item in products %}
+	    <div class="alert alert-dark" role="alert">
+	        <h2>{{item[1]}}</h2>
+          <div>{{item[2]}}</div>
+          <div>Цена: {{item[3]}}</div>
+          {% if status==item[4] %}
+            <a href="/delete_product/{{item[0]}}">Удалить товар</a>
+          {% endif %}
+	    </div>
+	{% endfor %}
+{% endblock %}
