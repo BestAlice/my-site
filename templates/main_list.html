@@ -6,13 +6,17 @@
  </style>
  </head>
  <!-- products - список кортежей всех товаров 
-      status - id пользователя, если авторизован, иначе no_user -->
+      id - id пользователя, если авторизован, иначе no_user 
+      status - adnin или user, если авторизован -->
 {% block content %}
 <body bgproperties="fixed">
     <h1 align=center>Добро пожаловать!</h1>
     <h2 align=right>
       {% if "username" in session %}
         <a class="navbar-brand" href="/my_page">{{session['username']}}</a> <br>
+        {% if status == 'admin'%}
+          <a href="/control_users">Пользователи</a> <br>
+        {% endif %}
         <a href="/add_product">Добавить Товар</a> <br>
         <a href="/basket">Корзина</a> <br>
         <a class="navbar-brand" href="/logout">Выход</a>
@@ -30,12 +34,12 @@
 	        <h2>{{item[1]}}</h2>
           <div>{{item[2]}}</div>
           <div>Цена: {{item[3]}}</div>
-          {% if status==item[4] %}
+          {% if id==item[4] %}
             <a href="/delete_product/{{item[0]}}">Удалить товар</a>
           {% endif %}
-          {% if (status != 'no_user') and (item[4] != status) %}
+          {% if (id != 'no_user') and (item[4] != id) %}
           <a href="/add_in_basket/{{item[0]}}">В корзину   </a>
-          <a href="/buy_one_product/{{item[0]}}">   Купить</a>
+          <a href="/buy_one_product/{{item[0]}}/1">   Купить</a>
           {% endif %}
 	    </div>
 	{% endfor %}

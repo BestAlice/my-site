@@ -60,3 +60,16 @@ class UserModel:
         cursor.execute('''UPDATE users SET sale = ? WHERE id = ?''',(str(sale),str(user_id)))
         cursor.close()
         self.connection.commit()
+
+    def delete_user(self, user_id):
+        cursor = self.connection.cursor()
+        cursor.execute('''DELETE FROM users WHERE id = ?''',
+                         (str(user_id)))
+        cursor.close()
+        self.connection.commit()
+    
+    def do_admin(self, user_id):
+        cursor = self.connection.cursor()
+        cursor.execute('''UPDATE users SET status = ? WHERE id = ?''',('admin', str(user_id)))
+        cursor.close()
+        self.connection.commit()

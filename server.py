@@ -16,7 +16,6 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 def not_found(error):
     return make_response(jsonify({'error': 'Not found 404'}), 404)
 
-#session['user_id'] пригодится
 
 @app.route('/')
 @app.route('/main')
@@ -26,16 +25,18 @@ def main():
     if 'username' in session:
         name = session['username']
         products =  ProductModel(db.get_connection()).get_all()
-        status = session['user_id']
+        status = UserModel(db.get_connection()).get(session['user_id'])[3]
+        id_us = session['user_id']
         BasketModel(db.get_connection()).init_table()
     else:
         name = 'Пользователь'
         products =  ProductModel(db.get_connection()).get_all()
-        status = 'no_user'
+        id_us = 'no_user'
     return render_template('main_list.html', title='Главная страница', \
         username='Пользователь', \
         products= products,
-        status= status)
+        status= status,
+        id= id_us)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -136,28 +137,27 @@ def basket1():
 @app.route('/add_in_basket/<int:product_id>', methods=['GET', 'POST'])
 def add_in(product_id):
     basket = BasketModel(db.get_connection())
-    basket.insert(product_id, session['user_id'])
+    seller = ProductModel(db.get_connection()).get(product_id)[4]
+    basket.insert(product_id, session['user_id'], seller)
     return redirect('/main')
 
-@app.route('/buy_one_product/<int:product_id>', methods=['GET', 'UPDATE'])
-def buy_one(product_id):
+@app.route('/buy_one_product/<int:product_id>/<int:page>', methods=['GET', 'UPDATE'])
+def buy_one(product_id, page):
     basket = BasketModel(db.get_connection())
     basket.delete_one(product_id, session['user_id'])
     UserModel(db.get_connection()).new_buy(session['user_id'])
     seller = ProductModel(db.get_connection()).get(product_id)[4]
     UserModel(db.get_connection()).new_sale(seller)
-    return redirect('/basket')
+    return redirect('/basket') if page == 2 else redirect('/main')
 
 @app.route('/buy_all', methods=['GET'])
 def buy_all():
     basket = BasketModel(db.get_connection())
     sp = basket.get_all(session['user_id'])
     prod = ProductModel(db.get_connection())
-    print(len(sp), session['user_id'])
     UserModel(db.get_connection()).new_buy(session['user_id'], len(sp))
     for item in sp:
-        seller = prod.get(item[0])[4]
-        UserModel(db.get_connection()).new_sale(seller)
+        UserModel(db.get_connection()).new_sale(item[1])
     basket.delete_for_buyer(session['user_id'])
     return redirect('/basket')
 
@@ -168,6 +168,34 @@ def profile():
     user = UserModel(db.get_connection()).get(session['user_id'])
     my_products = ProductModel(db.get_connection()).get_all(session['user_id'])
     return render_template('my_page.html', user=user, products=my_products)
+
+@app.route('/delite_my_profile', methods=['GET', 'DELETE'])
+def delite_my_profile():
+    BasketModel(db.get_connection()).delete_with_seller(session['user_id'])
+    ProductModel(db.get_connection()).delete_with_user(session['user_id'])
+    UserModel(db.get_connection()).delete_user(session['user_id'])
+    return redirect('/logout')
+
+#---------------------------------------------------
+
+@app.route('/control_users', methods=['GET'])
+def control_users():
+    users = UserModel(db.get_connection()).get_all()
+    print(users)
+    return render_template('control_users.html', users= users)
+
+@app.route('/delite_profile/<int:user_id>', methods=['GET', 'DELETE'])
+def delite_profile(user_id):
+    BasketModel(db.get_connection()).delete_with_seller(user_id)
+    ProductModel(db.get_connection()).delete_with_user(user_id)
+    UserModel(db.get_connection()).delete_user(user_id)
+    return redirect('/control_users')
+
+@app.route('/do_admin/<int:user_id>', methods=['GET', 'UPDATE'])
+def do_admin(user_id):
+    UserModel(db.get_connection()).do_admin(user_id)
+    return redirect('/control_users')
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
