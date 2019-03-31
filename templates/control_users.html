@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+<head>
+    <style type="text/css">
+    body { background: url("img.jpg"); }
+   .text {
+    text-align:  center;
+   }
+   .block1{
+    position: absolute;
+    height: 800px; /* Высота блока */
+    width: 1850px;
+    padding-left: 15px;
+    top: 140px;
+    left:20px;
+    background: repeat-y #fee5ac;  /* &nbsp;&nbsp; пробелы*/
+   }
+  </style>
+</head>
+<body bgproperties="fixed">
+    <div class="text" id="container"> <h2> Комната админа</h2></div>
+{% block content %}
+    <div class="block1" id="container">
+    {% for user in users %}
+        {% if user[3] != 'admin' %}
+            <div class="alert alert-dark" role="alert">
+                <div id="container">
+                <h5>Логин: {{user[1]}}</h5>
+                <div>Пароль: {{user[2]}}</div>
+                <a href='/delite_profile/{{user[0]}}'>Сжечь</a>
+                <a href='/do_admin/{{user[0]}}'>Вознести до админа</a>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+{% endblock %}
+</body>

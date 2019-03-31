@@ -46,3 +46,10 @@ class ProductModel:
         cursor.execute('''DELETE FROM products WHERE id = ?''', (str(produscs_id)))
         cursor.close()
         self.connection.commit()
+
+    def delete_with_user(self, user_id):
+        cursor = self.connection.cursor()
+        cursor.execute('''DELETE FROM products WHERE user_id = ?''',
+                         (str(user_id)))
+        cursor.close()
+        self.connection.commit()
