@@ -2,7 +2,7 @@
   <head>
  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
  <style type="text/css">
-   body {background-color:lightgray; }
+   body { background: url("img.jpg"); }
  </style>
  </head>
  <!-- products - список кортежей всех товаров 
@@ -11,35 +11,35 @@
 {% block content %}
 <body bgproperties="fixed">
     <h1 align=center>Добро пожаловать!</h1>
-    <h2 align=right>
+    <font size=5><p align=right>
       {% if "username" in session %}
         <a class="navbar-brand" href="/my_page">{{session['username']}}</a> <br>
         {% if status == 'admin'%}
-          <a href="/control_users">Пользователи</a> <br>
+          <a href="/control_users">Пользователи</a><br>
         {% endif %}
         <a href="/add_product">Добавить Товар</a> <br>
-        <a href="/basket">Корзина</a> <br>
-        <a class="navbar-brand" href="/logout">Выход</a>
+        <a href="/basket">Корзина</a><br>
+        <a class="navbar-brand" href="/logout">Выход</a><br>
       {% else %} 
-        <p>{{username}}</p>
+        {{username}}
         <a class="navbar-brand" href="/signup">Регистрация</a>  
         <a class="navbar-brand" href="/login">Вход</a> 
       {% endif %}
-     </h2>
+    </p></font>
      
-     <br><br>
+     <br>
      <h4> Вот список доступных товаров: </h4>
      {% for item in products %}
 	    <div class="alert alert-dark" role="alert">
 	        <h2>{{item[1]}}</h2>
           <div>{{item[2]}}</div>
           <div>Цена: {{item[3]}}</div>
-          {% if id==item[4] %}
-            <a href="/delete_product/{{item[0]}}">Удалить товар</a>
-          {% endif %}
           {% if (id != 'no_user') and (item[4] != id) %}
           <a href="/add_in_basket/{{item[0]}}">В корзину   </a>
-          <a href="/buy_one_product/{{item[0]}}/1">   Купить</a>
+          <a href="/buy_one_product/{{item[0]}}/1">   Купить</a><br>
+          {% endif %}
+          {% if (id==item[4]) or (status=='admin')%}
+            <a href="/delete_product/{{item[0]}}">Удалить товар</a>
           {% endif %}
 	    </div>
 	{% endfor %}

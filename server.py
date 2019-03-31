@@ -32,6 +32,7 @@ def main():
         name = 'Пользователь'
         products =  ProductModel(db.get_connection()).get_all()
         id_us = 'no_user'
+        status = 'no' 
     return render_template('main_list.html', title='Главная страница', \
         username='Пользователь', \
         products= products,

@@ -1,5 +1,22 @@
 {% extends "base.html" %}
-
+<head>
+   <style type="text/css">
+    body { background: url("img.jpg"); }
+   .text {
+    text-align:  center;
+   }
+   .block1{
+    position: absolute;
+    height: 800px; /* Высота блока */
+    width: 1850px;
+    padding-left: 15px;
+    top: 250px;
+    left:17px;
+    background: repeat-y #c1caca;  /* &nbsp;&nbsp; пробелы*/
+   }
+  </style>
+</head>
+<body bgproperties="fixed">
 {% block content %}
     <h1 align=center>{{user[1]}}</h1>
     <!-- Сделай по возможности Куплено и Продано на одной строке
@@ -8,15 +25,16 @@
     <p align=right>Продано: {{user[5]}}</p>
     <a href="/delite_my_profile">Удалить мой профиль</a>
     <br>
-    <h4>Мои товары:</h4>
+    <div class="text" id="container"><h4>Мои товары:</h4></div>
+<div class="block1" id="container">
     {% for item in products %}
 	    <div class="alert alert-dark" role="alert">
 	        <h2>{{item[1]}}</h2>
-          <div>{{item[2]}}</div>
-          <div>Цена: {{item[3]}}</div>
-          {% if status==item[4] %}
+            <div>{{item[2]}}</div>
+            <div>Цена: {{item[3]}}</div>
             <a href="/delete_product/{{item[0]}}">Удалить товар</a>
-          {% endif %}
 	    </div>
 	{% endfor %}
+</div>
 {% endblock %}
+</body>
